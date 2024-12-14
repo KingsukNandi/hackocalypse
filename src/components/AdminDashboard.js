@@ -7,13 +7,18 @@ import {
   orderBy 
 } from 'firebase/firestore';
 import { firestore } from '../firebase';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase'; // Import Firebase auth for logout
+import { useNavigate } from 'react-router-dom';
 
 function AdminDashboard() {
   const [criticalAlerts, setCriticalAlerts] = useState([]);
   const [newAlert, setNewAlert] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
+  // Use effect to subscribe to critical alerts and load them
   useEffect(() => {
     const alertsQuery = query(
       collection(firestore, 'criticalAlerts'), 
@@ -39,6 +44,7 @@ function AdminDashboard() {
     return () => unsubscribe();
   }, []);
 
+  // Broadcasting a new alert
   const broadcastAlert = async () => {
     if (newAlert.trim()) {
       try {
@@ -54,32 +60,60 @@ function AdminDashboard() {
     }
   };
 
+  // Formatting the timestamp to a readable format
   const formattedTimestamp = (timestamp) => {
     return new Date(timestamp.seconds * 1000).toLocaleString();
   };
 
+  // Logout functionality
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/'); // Redirect to home or login page
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   return (
     <div>
+      {/* Navbar */}
+      <nav style={{ padding: '10px', background: '#333', color: '#fff' }}>
+        <span>{auth.currentUser?.email}</span>
+        <button onClick={handleLogout} style={{ marginLeft: '20px' }}>
+          Logout
+        </button>
+        <button onClick={() => navigate('/trade')} style={{ marginLeft: '20px' }}>
+          Go to Trade
+        </button>
+        <button onClick={() => navigate('/survival')} style={{ marginLeft: '20px' }}>
+          Go to Survival
+        </button>
+      </nav>
+
       <h2>Admin Dashboard</h2>
+      
+      {/* New Alert Section */}
       <textarea 
         value={newAlert}
         onChange={(e) => setNewAlert(e.target.value)}
         placeholder="Broadcast a critical update"
+        style={{ width: '100%', height: '100px' }}
       />
-      <button onClick={broadcastAlert}>
-        Send Emergency Broadcast
-      </button>
+      <button onClick={broadcastAlert}>Send Emergency Broadcast</button>
 
+      {/* Loading/Error States */}
       {loading && <p>Loading alerts...</p>}
       {error && <p>{error}</p>}
 
+      {/* Alerts List */}
       <div>
         <h3>Critical Alerts History</h3>
         {criticalAlerts.length === 0 ? (
           <p>No alerts found.</p>
         ) : (
           criticalAlerts.map(alert => (
-            <div key={alert.id}>
+            <div key={alert.id} style={{ marginBottom: '20px' }}>
               <div>{alert.message}</div>
               <div>{formattedTimestamp(alert.timestamp)}</div>
             </div>
