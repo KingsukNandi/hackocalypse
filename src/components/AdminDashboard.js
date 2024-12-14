@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 function AdminDashboard() {
   const [criticalAlerts, setCriticalAlerts] = useState([]);
   const [newAlert, setNewAlert] = useState('');
+  const [severity, setSeverity] = useState(3); // Default severity is critical (3)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -44,16 +45,17 @@ function AdminDashboard() {
     return () => unsubscribe();
   }, []);
 
-  // Broadcasting a new alert
+  // Broadcasting a new alert with selected severity
   const broadcastAlert = async () => {
     if (newAlert.trim()) {
       try {
         await addDoc(collection(firestore, 'criticalAlerts'), {
           message: newAlert,
           timestamp: new Date(),
-          severity: 'critical'
+          severity: severity, // Store the severity value (1, 2, or 3)
         });
         setNewAlert('');
+        setSeverity(3); // Reset severity to default (critical)
       } catch (error) {
         console.error("Error broadcasting alert:", error);
       }
@@ -75,6 +77,16 @@ function AdminDashboard() {
     }
   };
 
+  // Function to determine the color based on severity
+  const getSeverityColor = (severity) => {
+    switch (severity) {
+      case 3: return 'red'; // Critical - Red
+      case 2: return 'yellow'; // Moderate - Yellow
+      case 1: return 'blue'; // Normal - Blue
+      default: return 'gray'; // Default color
+    }
+  };
+
   return (
     <div>
       {/* Navbar */}
@@ -92,7 +104,7 @@ function AdminDashboard() {
       </nav>
 
       <h2>Admin Dashboard</h2>
-      
+
       {/* New Alert Section */}
       <textarea 
         value={newAlert}
@@ -100,6 +112,18 @@ function AdminDashboard() {
         placeholder="Broadcast a critical update"
         style={{ width: '100%', height: '100px' }}
       />
+      <div>
+        <label htmlFor="severity">Severity:</label>
+        <select 
+          id="severity" 
+          value={severity}
+          onChange={(e) => setSeverity(Number(e.target.value))} 
+        >
+          <option value={3}>Critical</option>
+          <option value={2}>Moderate</option>
+          <option value={1}>Normal</option>
+        </select>
+      </div>
       <button onClick={broadcastAlert}>Send Emergency Broadcast</button>
 
       {/* Loading/Error States */}
@@ -114,7 +138,9 @@ function AdminDashboard() {
         ) : (
           criticalAlerts.map(alert => (
             <div key={alert.id} style={{ marginBottom: '20px' }}>
-              <div>{alert.message}</div>
+              <div style={{ color: getSeverityColor(alert.severity) }}>
+                {alert.message}
+              </div>
               <div>{formattedTimestamp(alert.timestamp)}</div>
             </div>
           ))
