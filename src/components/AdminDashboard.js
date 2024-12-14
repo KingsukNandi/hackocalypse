@@ -82,73 +82,77 @@ function AdminDashboard() {
   const getSeverityColor = (severity) => {
     switch (severity) {
       case 3:
-        return "#ff3333"; // Critical - Bright Red
+        return "red"; // Critical - Red
       case 2:
-        return "#ffb84d"; // Moderate - Orange
+        return "yellow"; // Moderate - Yellow
       case 1:
-        return "#4d94ff"; // Normal - Blue (changed from green)
+        return "blue"; // Normal - Blue
       default:
-        return "#4d94ff"; // Default - Blue (changed from green)
+        return "gray"; // Default color
     }
   };
 
   return (
-    <div className="terminal-dashboard">
+    <div>
       {/* Navbar */}
+      <nav style={{ padding: "10px", background: "#333", color: "#fff" }}>
+        <span>{auth.currentUser?.email}</span>
+        <button onClick={handleLogout} style={{ marginLeft: "20px" }}>
+          Logout
+        </button>
+        <button
+          onClick={() => navigate("/trade")}
+          style={{ marginLeft: "20px" }}
+        >
+          Go to Trade
+        </button>
+        <button
+          onClick={() => navigate("/survival")}
+          style={{ marginLeft: "20px" }}
+        >
+          Go to Survival
+        </button>
+      </nav>
 
-      <h2 className="dashboard-title">ADMIN DASHBOARD</h2>
+      <h2>Admin Dashboard</h2>
 
       {/* New Alert Section */}
-      <div className="broadcast-section">
-        <h3>EMERGENCY BROADCAST SYSTEM</h3>
-        <textarea
-          value={newAlert}
-          onChange={(e) => setNewAlert(e.target.value)}
-          placeholder="BROADCAST A CRITICAL UPDATE"
-          className="broadcast-input"
-        />
-        <div className="severity-selector">
-          <label htmlFor="severity">SEVERITY LEVEL:</label>
-          <select
-            id="severity"
-            value={severity}
-            onChange={(e) => setSeverity(Number(e.target.value))}
-            className="severity-select"
-          >
-            <option value={3}>CRITICAL</option>
-            <option value={2}>MODERATE</option>
-            <option value={1}>NORMAL</option>
-          </select>
-        </div>
-        <button onClick={broadcastAlert} className="broadcast-button">
-          [SEND EMERGENCY BROADCAST]
-        </button>
+      <textarea
+        value={newAlert}
+        onChange={(e) => setNewAlert(e.target.value)}
+        placeholder="Broadcast a critical update"
+        style={{ width: "100%", height: "100px" }}
+      />
+      <div>
+        <label htmlFor="severity">Severity:</label>
+        <select
+          id="severity"
+          value={severity}
+          onChange={(e) => setSeverity(Number(e.target.value))}
+        >
+          <option value={3}>Critical</option>
+          <option value={2}>Moderate</option>
+          <option value={1}>Normal</option>
+        </select>
       </div>
+      <button onClick={broadcastAlert}>Send Emergency Broadcast</button>
 
       {/* Loading/Error States */}
-      {loading && <p className="status-message">LOADING ALERTS...</p>}
-      {error && <p className="status-message error">{error}</p>}
+      {loading && <p>Loading alerts...</p>}
+      {error && <p>{error}</p>}
 
       {/* Alerts List */}
-      <div className="alerts-section">
-        <h3>CRITICAL ALERTS HISTORY</h3>
+      <div>
+        <h3>Critical Alerts History</h3>
         {criticalAlerts.length === 0 ? (
-          <p className="no-alerts">NO ALERTS FOUND</p>
+          <p>No alerts found.</p>
         ) : (
           criticalAlerts.map((alert) => (
-            <div key={alert.id} className="alert-item">
-              <div
-                className="alert-message"
-                style={{
-                  color: getSeverityColor(alert.severity),
-                  textShadow: `0 0 5px ${getSeverityColor(alert.severity)}`,
-                }}
-              >
+            <div key={alert.id} style={{ marginBottom: "20px" }}>
+              <div style={{ color: getSeverityColor(alert.severity) }}>
                 {alert.message}
               </div>
-              <div className="alert-timestamp">
-                {formattedTimestamp(alert.timestamp)}
-              </div>
+              <div>{formattedTimestamp(alert.timestamp)}</div>
             </div>
           ))
         )}
