@@ -6,11 +6,13 @@ import {
   signInWithPopup
 } from 'firebase/auth';
 import { auth } from '../firebase';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -20,6 +22,9 @@ function Auth() {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
+
+      // Redirect to Admin Dashboard after successful authentication
+      navigate('/admin');
     } catch (error) {
       console.error(error);
     }
@@ -29,6 +34,9 @@ function Auth() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
+
+      // Redirect to Admin Dashboard after successful Google login
+      navigate('/admin');
     } catch (error) {
       console.error(error);
     }
