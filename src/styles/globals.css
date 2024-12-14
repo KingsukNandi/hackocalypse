@@ -1,0 +1,80 @@
+/* Vault-Tec Terminal Theme */
+:root {
+  --primary: #00FF00;  /* Classic green terminal color */
+  --secondary: #FFB000; /* Vault-Tec gold */
+  --background: #0A0A0A;
+  --text: var(--primary);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.pip-boy-container {
+  background-color: rgba(0, 255, 0, 0.05);
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+.vault-input {
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.vault-input:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.vault-button {
+  background-color: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.vault-button:hover:not(:disabled) {
+  background-color: var(--primary);
+  color: var(--background);
+}
+
+.vault-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Terminal effect */
+.terminal-effect {
+  position: relative;
+}
+
+.terminal-effect::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+} 
