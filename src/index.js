@@ -3,8 +3,12 @@ import ReactDOM from 'react-dom/client'; // Import createRoot from 'react-dom/cl
 import { BrowserRouter as Router } from 'react-router-dom'; // Import BrowserRouter
 import App from './App'; // Import your main App component
 
-// Select the root DOM node
-const rootElement = document.getElementById('root');
+
+// Import the font from Google Fonts
+const link = document.createElement('link');
+link.href = 'https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap';
+link.rel = 'stylesheet';
+document.head.appendChild(link);
 
 // Create a root using createRoot
 const root = ReactDOM.createRoot(rootElement);

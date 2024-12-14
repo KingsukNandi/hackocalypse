@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from 'firebase/auth';
+
 import { auth, firestore } from '../firebase'; // Import firestore for saving username
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { setDoc, doc } from 'firebase/firestore'; // Firestore functions for saving user data
@@ -14,11 +15,13 @@ function Auth() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState(''); // State for username
   const [isSignUp, setIsSignUp] = useState(false);
-  const navigate = useNavigate(); // Initialize the navigate function
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Handle user signup or login
   const handleAuth = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       let userCredential;
       if (isSignUp) {
@@ -35,24 +38,25 @@ function Auth() {
         // Sign-in flow
         userCredential = await signInWithEmailAndPassword(auth, email, password);
       }
-
-      // Redirect to Admin Dashboard after successful authentication
       navigate('/admin');
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Handle Google Sign-In
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
+    setLoading(true);
     try {
       await signInWithPopup(auth, provider);
-
-      // Redirect to Admin Dashboard after successful Google login
       navigate('/admin');
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
