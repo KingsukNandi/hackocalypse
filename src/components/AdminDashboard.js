@@ -82,18 +82,18 @@ function AdminDashboard() {
   const getSeverityColor = (severity) => {
     switch (severity) {
       case 3:
-        return "red"; // Critical - Red
+        return "#ff3333"; // Critical - Bright Red
       case 2:
-        return "yellow"; // Moderate - Yellow
+        return "#ffb84d"; // Moderate - Orange
       case 1:
-        return "blue"; // Normal - Blue
+        return "#4d94ff"; // Normal - Blue (changed from green)
       default:
-        return "gray"; // Default color
+        return "#4d94ff"; // Default - Blue (changed from green)
     }
   };
 
   return (
-    <div>
+    <div className="terminal-dashboard">
       {/* Navbar */}
       <nav style={{ padding: "10px", background: "#333", color: "#fff" }}>
         <span>{auth.currentUser?.email}</span>
@@ -117,6 +117,31 @@ function AdminDashboard() {
       <h2>Admin Dashboard</h2>
 
       {/* New Alert Section */}
+      <div className="broadcast-section">
+        <h3>EMERGENCY BROADCAST SYSTEM</h3>
+        <textarea
+          value={newAlert}
+          onChange={(e) => setNewAlert(e.target.value)}
+          placeholder="BROADCAST A CRITICAL UPDATE"
+          className="broadcast-input"
+        />
+        <div className="severity-selector">
+          <label htmlFor="severity">SEVERITY LEVEL:</label>
+          <select
+            id="severity"
+            value={severity}
+            onChange={(e) => setSeverity(Number(e.target.value))}
+            className="severity-select"
+          >
+            <option value={3}>CRITICAL</option>
+            <option value={2}>MODERATE</option>
+            <option value={1}>NORMAL</option>
+          </select>
+        </div>
+        <button onClick={broadcastAlert} className="broadcast-button">
+          [SEND EMERGENCY BROADCAST]
+        </button>
+      </div>
       <textarea
         value={newAlert}
         onChange={(e) => setNewAlert(e.target.value)}
@@ -138,14 +163,14 @@ function AdminDashboard() {
       <button onClick={broadcastAlert}>Send Emergency Broadcast</button>
 
       {/* Loading/Error States */}
-      {loading && <p>Loading alerts...</p>}
-      {error && <p>{error}</p>}
+      {loading && <p className="status-message">LOADING ALERTS...</p>}
+      {error && <p className="status-message error">{error}</p>}
 
       {/* Alerts List */}
-      <div>
-        <h3>Critical Alerts History</h3>
+      <div className="alerts-section">
+        <h3>CRITICAL ALERTS HISTORY</h3>
         {criticalAlerts.length === 0 ? (
-          <p>No alerts found.</p>
+          <p className="no-alerts">NO ALERTS FOUND</p>
         ) : (
           criticalAlerts.map((alert) => (
             <div key={alert.id} style={{ marginBottom: "20px" }}>

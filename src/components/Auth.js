@@ -3,11 +3,12 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup
-} from 'firebase/auth';
-import { auth, firestore } from '../firebase'; // Import firestore for saving username
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { setDoc, doc } from 'firebase/firestore'; // Firestore functions for saving user data
+  signInWithPopup,
+} from "firebase/auth";
+import { auth, firestore } from "../firebase"; // Import firestore for saving username
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { setDoc, doc } from "firebase/firestore"; // Firestore functions for saving user data
+import "../styles/terminal-theme.css";
 
 function Auth() {
   const [email, setEmail] = useState("");
@@ -47,7 +48,7 @@ function Auth() {
       }
 
       // Redirect to Admin Dashboard after successful authentication
-      navigate('/admin');
+      navigate("/admin");
     } catch (error) {
       console.error(error);
     } finally {
@@ -63,7 +64,7 @@ function Auth() {
       await signInWithPopup(auth, provider);
 
       // Redirect to Admin Dashboard after successful Google login
-      navigate('/admin');
+      navigate("/admin");
     } catch (error) {
       console.error(error);
     } finally {
